@@ -1,122 +1,352 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState } from "react";
+import SearchBar from "./components/SearchBar/SearchBar";
+import { useWeather } from "./hooks/useWeather";
+import {
+  getWeatherInfo,
+  getWindDirection,
+  formatTemp,
+} from "./utils/weatherUtils";
+import type { Location } from "./types/weather";
+import "./styles/global.scss";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [unit, setUnit] = useState<"celsius" | "fahrenheit">("celsius");
+  const { data, loading, error, fetch: fetchWeather } = useWeather();
 
+  const handleSelect = (location: Location) => {
+    console.log("test location", location);
+    fetchWeather(location, unit);
+  };
+
+  const toggleUnit = () => {
+    const next = unit === "celsius" ? "fahrenheit" : "celsius";
+    setUnit(next);
+    if (data) fetchWeather(data.location, next);
+  };
+  console.log("test data", data);
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#0d0f1a",
+        color: "#e8eaf6",
+        padding: "32px",
+        fontFamily: "'DM Sans', sans-serif",
+      }}
+    >
+      <h1
+        style={{
+          fontFamily: "'Space Mono', monospace",
+          color: "#7eb3ff",
+          marginBottom: 24,
+        }}
+      >
+        ⛅ skye
+      </h1>
+
+      {/* Search + unit toggle */}
+      <div
+        style={{
+          display: "flex",
+          gap: 12,
+          alignItems: "center",
+          marginBottom: 32,
+        }}
+      >
+        <SearchBar onSelect={handleSelect} />
         <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
+          onClick={toggleUnit}
+          style={{
+            background: "#1a1d2e",
+            border: "1.5px solid #2e3250",
+            borderRadius: 8,
+            color: "#e8eaf6",
+            padding: "10px 18px",
+            cursor: "pointer",
+            fontFamily: "'Space Mono', monospace",
+            fontSize: 14,
+            whiteSpace: "nowrap",
+          }}
         >
-          Count is {count}
+          Switch to °{unit === "celsius" ? "F" : "C"}
         </button>
-      </section>
+      </div>
 
-      <div className="ticks"></div>
+      {/* States */}
+      {loading && <p style={{ color: "#7b82a8" }}>Fetching weather...</p>}
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+      {error && <p style={{ color: "#f56b6b" }}>Error: {error}</p>}
+
+      {/* Weather output — raw data for testing */}
+      {data && !loading && (
+        <div style={{ display: "grid", gap: 16, maxWidth: 700 }}>
+          {/* Current */}
+          <div
+            style={{
+              background: "#1a1d2e",
+              border: "1px solid #2e3250",
+              borderRadius: 16,
+              padding: 24,
+            }}
+          >
+            <p
+              style={{
+                color: "#7b82a8",
+                fontSize: 11,
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+                margin: "0 0 12px",
+              }}
+            >
+              Current
+            </p>
+            <h2 style={{ margin: "0 0 4px", fontSize: 28 }}>
+              {data.location.name}, {data.location.country}
+            </h2>
+            <p style={{ color: "#7b82a8", margin: "0 0 20px", fontSize: 13 }}>
+              {data.location.latitude}°N, {data.location.longitude}°E ·{" "}
+              {data.timezone}
+            </p>
+
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 16,
+                marginBottom: 20,
+              }}
+            >
+              <span style={{ fontSize: 56 }}>
+                {getWeatherInfo(data.current.weathercode).icon}
+              </span>
+              <div>
+                <div
+                  style={{
+                    fontFamily: "'Space Mono', monospace",
+                    fontSize: 56,
+                    fontWeight: 700,
+                    lineHeight: 1,
+                    color: "#fff",
+                  }}
+                >
+                  {formatTemp(data.current.temperature, unit)}
+                </div>
+                <div style={{ color: "#a0a8cc", marginTop: 4 }}>
+                  {getWeatherInfo(data.current.weathercode).label}
+                </div>
+                <div style={{ color: "#7b82a8", fontSize: 13 }}>
+                  Feels like {formatTemp(data.current.feelsLike, unit)}
+                </div>
+              </div>
+            </div>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(4, 1fr)",
+                gap: 12,
+              }}
+            >
+              {[
+                { label: "Humidity", value: `${data.current.humidity}%` },
+                {
+                  label: "Wind",
+                  value: `${Math.round(
+                    data.current.windspeed
+                  )} km/h ${getWindDirection(data.current.winddirection)}`,
+                },
+                { label: "UV Index", value: data.daily.uvIndexMax[0] },
+                {
+                  label: "Day/Night",
+                  value: data.current.isDay ? "Day ☀️" : "Night 🌙",
+                },
+              ].map((s) => (
+                <div
+                  key={s.label}
+                  style={{
+                    background: "#151827",
+                    borderRadius: 10,
+                    padding: "12px 14px",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontFamily: "'Space Mono', monospace",
+                      fontSize: 18,
+                      fontWeight: 700,
+                      color: "#fff",
+                    }}
+                  >
+                    {s.value}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: "#7b82a8",
+                      marginTop: 4,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.07em",
+                    }}
+                  >
+                    {s.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 7-day */}
+          <div
+            style={{
+              background: "#1a1d2e",
+              border: "1px solid #2e3250",
+              borderRadius: 16,
+              padding: 24,
+            }}
+          >
+            <p
+              style={{
+                color: "#7b82a8",
+                fontSize: 11,
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+                margin: "0 0 16px",
+              }}
+            >
+              7-day forecast
+            </p>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(7, 1fr)",
+                gap: 8,
+              }}
+            >
+              {data.daily.time.map((day, i) => (
+                <div
+                  key={day}
+                  style={{
+                    background: i === 0 ? "#1a2040" : "#151827",
+                    border: `1px solid ${i === 0 ? "#5b8af5" : "#2e3250"}`,
+                    borderRadius: 12,
+                    padding: "12px 8px",
+                    textAlign: "center",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: "#7b82a8",
+                      marginBottom: 6,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.06em",
+                    }}
+                  >
+                    {i === 0
+                      ? "Today"
+                      : new Date(day).toLocaleDateString("en", {
+                          weekday: "short",
+                        })}
+                  </div>
+                  <div style={{ fontSize: 22, marginBottom: 6 }}>
+                    {getWeatherInfo(data.daily.weathercode[i]).icon}
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "'Space Mono', monospace",
+                      fontSize: 13,
+                      fontWeight: 700,
+                      color: "#fff",
+                    }}
+                  >
+                    {formatTemp(data.daily.temperatureMax[i], unit)}
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "'Space Mono', monospace",
+                      fontSize: 11,
+                      color: "#7b82a8",
+                      marginTop: 2,
+                    }}
+                  >
+                    {formatTemp(data.daily.temperatureMin[i], unit)}
+                  </div>
+                  <div style={{ fontSize: 10, color: "#5b8af5", marginTop: 6 }}>
+                    {data.daily.precipitationProbabilityMax[i]}% 🌧
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Sunrise / Sunset */}
+          <div
+            style={{
+              background: "#1a1d2e",
+              border: "1px solid #2e3250",
+              borderRadius: 16,
+              padding: 24,
+              display: "flex",
+              gap: 32,
+            }}
+          >
+            <div>
+              <p
+                style={{
+                  color: "#7b82a8",
+                  fontSize: 11,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.1em",
+                  margin: "0 0 8px",
+                }}
+              >
+                Sunrise
+              </p>
+              <p
+                style={{
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: 22,
+                  fontWeight: 700,
+                  margin: 0,
+                  color: "#f5a623",
+                }}
+              >
+                {new Date(data.daily.sunrise[0]).toLocaleTimeString("en", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </p>
+            </div>
+            <div>
+              <p
+                style={{
+                  color: "#7b82a8",
+                  fontSize: 11,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.1em",
+                  margin: "0 0 8px",
+                }}
+              >
+                Sunset
+              </p>
+              <p
+                style={{
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: 22,
+                  fontWeight: 700,
+                  margin: 0,
+                  color: "#f5a623",
+                }}
+              >
+                {new Date(data.daily.sunset[0]).toLocaleTimeString("en", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </p>
+            </div>
+          </div>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      )}
+    </div>
+  );
 }
-
-export default App
