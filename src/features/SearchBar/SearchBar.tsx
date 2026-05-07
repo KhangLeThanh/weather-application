@@ -64,7 +64,6 @@ export default function SearchBar({
 
   const handleCurrentLocation = () => {
     if (!navigator.geolocation) return;
-
     setLocating(true);
     navigator.geolocation.getCurrentPosition(
       async (position) => {
