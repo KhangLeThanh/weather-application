@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { FiSearch, FiX, FiMapPin } from "react-icons/fi";
+import { FiSearch, FiX, FiMapPin, FiNavigation } from "react-icons/fi";
 import { searchLocations } from "../../api/weatherApi";
+import { reverseGeocode } from "../../api/reverseGeocode";
 import type { Location } from "../../types/weather";
 import styles from "./SearchBar.module.scss";
 
@@ -16,11 +17,11 @@ export default function SearchBar({
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Location[]>([]);
   const [loading, setLoading] = useState(false);
+  const [locating, setLocating] = useState(false);
   const [open, setOpen] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  // Close on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (
@@ -36,7 +37,6 @@ export default function SearchBar({
 
   const handleQueryChange = useCallback((value: string) => {
     setQuery(value);
-
     if (debounceRef.current) clearTimeout(debounceRef.current);
 
     if (!value.trim()) {
@@ -72,6 +72,24 @@ export default function SearchBar({
     setOpen(false);
   };
 
+  const handleCurrentLocation = () => {
+    if (!navigator.geolocation) return;
+
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        const location = await reverseGeocode(latitude, longitude);
+        setQuery(`${location.name}, ${location.country}`);
+        onSelect(location);
+        setLocating(false);
+      },
+      () => {
+        setLocating(false);
+      }
+    );
+  };
+
   return (
     <div className={styles.wrapper} ref={wrapperRef}>
       <div
@@ -99,6 +117,15 @@ export default function SearchBar({
             <FiX />
           </button>
         )}
+        <div className={styles.divider} />
+        <button
+          className={styles.locationBtn}
+          onClick={handleCurrentLocation}
+          aria-label="Use current location"
+          disabled={locating}
+        >
+          {locating ? <span className={styles.spinner} /> : <FiNavigation />}
+        </button>
       </div>
 
       {open && results.length > 0 && (
