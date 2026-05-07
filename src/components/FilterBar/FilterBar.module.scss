@@ -1,0 +1,35 @@
+$surface: #1a1d2e;
+$border: #2e3250;
+$accent: #5b8af5;
+$text-secondary: #7b82a8;
+$text-primary: #e8eaf6;
+$transition: 0.2s ease;
+
+.bar {
+  display: flex;
+  gap: 6px;
+}
+
+.btn {
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 400;
+  cursor: pointer;
+  border: 1.5px solid $border;
+  font-family: "DM Sans", sans-serif;
+  background: transparent;
+  color: $text-secondary;
+  transition: all $transition;
+
+  &.active {
+    background: rgba(91, 138, 245, 0.15);
+    border-color: $accent;
+    color: $accent;
+  }
+
+  &:not(.active):hover {
+    color: $text-primary;
+    border-color: lighten($border, 10%);
+  }
+}
