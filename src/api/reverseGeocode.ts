@@ -1,14 +1,23 @@
+import axios from "axios";
 import type { Location } from "../types/weather";
+
+const nominatimClient = axios.create({
+  baseURL: "https://nominatim.openstreetmap.org",
+  headers: { "User-Agent": "weather-app" },
+});
 
 export async function reverseGeocode(
   lat: number,
   lon: number
 ): Promise<Location> {
-  const res = await fetch(
-    `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=en`,
-    { headers: { "User-Agent": "weather-app" } }
-  );
-  const data = await res.json();
+  const { data } = await nominatimClient.get("/reverse", {
+    params: {
+      lat,
+      lon,
+      format: "json",
+      "accept-language": "en",
+    },
+  });
 
   const name =
     data.address?.city ||

@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useCallback } from "react";
 import { FiSearch, FiX, FiMapPin, FiNavigation } from "react-icons/fi";
 import { searchLocations } from "../../api/weatherApi";
 import { reverseGeocode } from "../../api/reverseGeocode";
 import type { Location } from "../../types/weather";
+import useClickOutsideEvent from "../../hooks/useClickOutsideEvent";
 import styles from "./SearchBar.module.scss";
 
 interface SearchBarProps {
@@ -22,18 +23,7 @@ export default function SearchBar({
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (
-        wrapperRef.current &&
-        !wrapperRef.current.contains(e.target as Node)
-      ) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
+  useClickOutsideEvent(wrapperRef, () => setOpen(false));
 
   const handleQueryChange = useCallback((value: string) => {
     setQuery(value);
