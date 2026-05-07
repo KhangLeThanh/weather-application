@@ -9,14 +9,11 @@ import styles from "./ForecastPanel.module.scss";
 interface ForecastPanelProps {
   data: WeatherData;
 }
-
-type TabView = ForecastView.Daily | ForecastView.Hourly;
 type DayFilter =
   | FilteredDay.Today
   | FilteredDay.ThreeDays
   | FilteredDay.SevenDays;
-
-const VIEW_OPTIONS: { label: string; value: TabView }[] = [
+const VIEW_OPTIONS: { label: string; value: ForecastView }[] = [
   { label: "Daily", value: ForecastView.Daily },
   { label: "Hourly", value: ForecastView.Hourly },
 ];
@@ -27,21 +24,20 @@ const FILTER_OPTIONS: { label: string; value: DayFilter }[] = [
   { label: "7 days", value: FilteredDay.SevenDays },
 ];
 
-const HOURS_MAP: Record<FilteredDay, number> = {
+const HOURS_MAP: Record<DayFilter, number> = {
   [FilteredDay.Today]: 24,
   [FilteredDay.ThreeDays]: 72,
   [FilteredDay.SevenDays]: 168,
 };
 
 export default function ForecastPanel({ data }: ForecastPanelProps) {
-  const [view, setView] = useState<TabView>(ForecastView.Daily);
+  const [view, setView] = useState<ForecastView>(ForecastView.Daily);
   const [filter, setFilter] = useState<DayFilter>(FilteredDay.SevenDays);
 
   const { daily, hourly, unit } = data;
-
   const filteredDays = daily.time.slice(0, filter);
-
   const now = new Date();
+
   const filteredHourly = hourly.time
     .map((t, i) => ({ time: t, index: i }))
     .filter(({ time }) => new Date(time) >= now)
@@ -50,7 +46,11 @@ export default function ForecastPanel({ data }: ForecastPanelProps) {
   return (
     <div className={styles.panel}>
       <div className={styles.header}>
-        <Tab<TabView> options={VIEW_OPTIONS} value={view} onChange={setView} />
+        <Tab<ForecastView>
+          options={VIEW_OPTIONS}
+          value={view}
+          onChange={setView}
+        />
         <Tab<DayFilter>
           options={FILTER_OPTIONS}
           value={filter}
@@ -61,7 +61,9 @@ export default function ForecastPanel({ data }: ForecastPanelProps) {
       {view === ForecastView.Daily && (
         <div className={styles.dailyGrid}>
           {filteredDays.map((day, i) => {
-            const weather = getWeatherInfo(daily.weathercode[i]);
+            const { label, icon: WeatherIcon } = getWeatherInfo(
+              daily.weathercode[i]
+            );
             return (
               <div
                 key={day}
@@ -80,8 +82,10 @@ export default function ForecastPanel({ data }: ForecastPanelProps) {
                     day: "numeric",
                   })}
                 </div>
-                <div className={styles.dayIcon}>{weather.icon}</div>
-                <div className={styles.dayCondition}>{weather.label}</div>
+                <div className={styles.dayIcon}>
+                  <WeatherIcon size={30} />
+                </div>
+                <div className={styles.dayCondition}>{label}</div>
                 <div className={styles.dayTemps}>
                   <span className={styles.tempHi}>
                     {formatTemp(daily.temperatureMax[i], unit)}
@@ -102,9 +106,11 @@ export default function ForecastPanel({ data }: ForecastPanelProps) {
       {view === ForecastView.Hourly && (
         <div className={styles.hourlyList}>
           {filteredHourly.map(({ time, index }) => {
-            const weather = getWeatherInfo(hourly.weathercode[index]);
+            const { label, icon: WeatherIcon } = getWeatherInfo(
+              hourly.weathercode[index]
+            );
             const hour = new Date(time).getHours();
-            const isNow = new Date(time).getHours() === now.getHours();
+            const isNow = hour === now.getHours();
             return (
               <div
                 key={time}
@@ -113,8 +119,10 @@ export default function ForecastPanel({ data }: ForecastPanelProps) {
                 <span className={styles.hourTime}>
                   {isNow ? "Now" : `${String(hour).padStart(2, "0")}:00`}
                 </span>
-                <span className={styles.hourIcon}>{weather.icon}</span>
-                <span className={styles.hourCondition}>{weather.label}</span>
+                <span className={styles.hourIcon}>
+                  <WeatherIcon size={20} />
+                </span>
+                <span className={styles.hourCondition}>{label}</span>
                 <span className={styles.hourRain}>
                   <FiCloudRain /> {hourly.precipitationProbability[index]}%
                 </span>

@@ -13,7 +13,7 @@ interface WeatherDisplayProps {
 
 export default function WeatherDisplay({ data }: WeatherDisplayProps) {
   const { current, location, daily, unit } = data;
-  const weather = getWeatherInfo(current.weathercode);
+  const { label, icon: WeatherIcon } = getWeatherInfo(current.weathercode);
 
   const stats = [
     { label: "Feels like", value: formatTemp(current.feelsLike, unit) },
@@ -32,17 +32,19 @@ export default function WeatherDisplay({ data }: WeatherDisplayProps) {
       <div className={styles.location}>
         <h2 className={styles.city}>{location.name}</h2>
         <p className={styles.country}>
-          {location.country} &middot; {data.timezone}
+          {location.country} · {data.timezone}
         </p>
       </div>
 
       <div className={styles.main}>
-        <span className={styles.icon}>{weather.icon}</span>
+        <span className={styles.icon}>
+          <WeatherIcon size={72} />
+        </span>
         <div>
           <div className={styles.temp}>
             {formatTemp(current.temperature, unit)}
           </div>
-          <div className={styles.condition}>{weather.label}</div>
+          <div className={styles.condition}>{label}</div>
           <div className={styles.daynight}>
             {current.isDay ? (
               <>
