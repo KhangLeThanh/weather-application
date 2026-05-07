@@ -8,7 +8,7 @@ export enum ForecastView {
   Hourly = "hourly",
 }
 
-export enum DayFilter {
+export enum FilteredDay {
   Today = 1,
   ThreeDays = 3,
   SevenDays = 7,
