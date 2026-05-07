@@ -1,7 +1,5 @@
 @use "./styles/breakpoints" as *;
-
-$text-secondary: #7b82a8;
-$accent: #7eb3ff;
+@use "./styles/variables" as *;
 
 .app {
   min-height: 100vh;
@@ -12,7 +10,6 @@ $accent: #7eb3ff;
   @include tablet {
     padding: 0 20px 40px;
   }
-
   @include mobile {
     padding: 0 14px 32px;
   }
@@ -32,10 +29,10 @@ $accent: #7eb3ff;
 }
 
 .logo {
-  font-family: "Space Grotesk", sans-serif;
+  font-family: $font-display;
   font-size: 20px;
   font-weight: 700;
-  color: $accent;
+  color: $accent-blue;
   letter-spacing: -0.3px;
 
   @include mobile {
@@ -45,7 +42,6 @@ $accent: #7eb3ff;
 
 .searchRow {
   margin-bottom: 28px;
-
   @include mobile {
     margin-bottom: 20px;
   }
@@ -55,7 +51,6 @@ $accent: #7eb3ff;
   display: flex;
   flex-direction: column;
   gap: 20px;
-
   @include mobile {
     gap: 14px;
   }
@@ -66,7 +61,6 @@ $accent: #7eb3ff;
   padding: 80px 20px;
   color: $text-secondary;
   font-size: 16px;
-
   @include mobile {
     padding: 48px 16px;
     font-size: 14px;
@@ -74,5 +68,5 @@ $accent: #7eb3ff;
 }
 
 .error {
-  color: #f56b6b;
+  color: $error;
 }

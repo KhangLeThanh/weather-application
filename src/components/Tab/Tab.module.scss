@@ -1,16 +1,9 @@
 @use "../../styles/breakpoints" as *;
-
-$surface: #1a1d2e;
-$border: #2e3250;
-$accent: #5b8af5;
-$text-primary: #e8eaf6;
-$text-secondary: #7b82a8;
-$transition: 0.2s ease;
+@use "../../styles/variables" as *;
 
 .tab {
   display: flex;
   gap: 6px;
-
   @include mobile {
     gap: 4px;
   }
@@ -18,12 +11,12 @@ $transition: 0.2s ease;
 
 .btn {
   padding: 6px 16px;
-  border-radius: 8px;
+  border-radius: $radius-sm;
   font-size: 13px;
   font-weight: 400;
   cursor: pointer;
   border: 1.5px solid $border;
-  font-family: "Inter", sans-serif;
+  font-family: $font-base;
   background: transparent;
   color: $text-secondary;
   transition: all $transition;
@@ -37,7 +30,7 @@ $transition: 0.2s ease;
 
   &:not(.active):hover {
     color: $text-primary;
-    border-color: #3d4270;
+    border-color: $border-hover;
   }
 
   @include mobile {

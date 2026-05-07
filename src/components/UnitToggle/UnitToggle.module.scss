@@ -1,17 +1,11 @@
 @use "../../styles/breakpoints" as *;
-
-$surface: #1a1d2e;
-$border: #2e3250;
-$accent: #5b8af5;
-$text-primary: #e8eaf6;
-$text-secondary: #7b82a8;
-$transition: 0.2s ease;
+@use "../../styles/variables" as *;
 
 .toggle {
   display: flex;
   background: $surface;
   border: 1.5px solid $border;
-  border-radius: 8px;
+  border-radius: $radius-sm;
   padding: 3px;
   gap: 2px;
 }
@@ -23,7 +17,7 @@ $transition: 0.2s ease;
   font-weight: 500;
   cursor: pointer;
   border: none;
-  font-family: "Space Grotesk", sans-serif;
+  font-family: $font-display;
   background: transparent;
   color: $text-secondary;
   transition: all $transition;
@@ -32,7 +26,6 @@ $transition: 0.2s ease;
     background: $accent;
     color: #fff;
   }
-
   &:not(.active):hover {
     color: $text-primary;
   }
