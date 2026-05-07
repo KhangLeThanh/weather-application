@@ -1,8 +1,8 @@
 import { useState } from "react";
-import SearchBar from "./components/SearchBar/SearchBar";
+import SearchBar from "./features/SearchBar/SearchBar";
+import WeatherDisplay from "./features/WeatherDisplay/WeatherDisplay";
+import ForecastPanel from "./features/ForecastPanel/ForecastPanel";
 import UnitToggle from "./components/UnitToggle/UnitToggle";
-import WeatherDisplay from "./components/WeatherDisplay/WeatherDisplay";
-import ForecastPanel from "./components/ForecastPanel/ForecastPanel";
 import { useWeather } from "./hooks/useWeather";
 import type { Location } from "./types/weather";
 import "./styles/global.scss";
@@ -31,7 +31,7 @@ export default function App() {
         <SearchBar onSelect={handleSelect} />
       </div>
 
-      <main className="content">
+      <main>
         {!data && !loading && !error && (
           <div className="empty-state">
             <p>Search for a city to see the weather 🌍</p>
