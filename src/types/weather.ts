@@ -1,4 +1,5 @@
-// ── Location ──────────────────────────────────────────────
+import { TemperatureUnit } from "../utils/enum";
+
 export interface Location {
   name: string;
   country: string;
@@ -6,7 +7,6 @@ export interface Location {
   longitude: number;
 }
 
-// ── Current Weather ───────────────────────────────────────
 export interface CurrentWeather {
   temperature: number;
   feelsLike: number;
@@ -18,7 +18,6 @@ export interface CurrentWeather {
   time: string;
 }
 
-// ── Daily Forecast ────────────────────────────────────────
 export interface DailyForecast {
   time: string[];
   temperatureMax: number[];
@@ -32,7 +31,6 @@ export interface DailyForecast {
   windspeedMax: number[];
 }
 
-// ── Hourly Forecast ───────────────────────────────────────
 export interface HourlyForecast {
   time: string[];
   temperature: number[];
@@ -41,12 +39,11 @@ export interface HourlyForecast {
   humidity: number[];
 }
 
-// ── Full Weather Response ─────────────────────────────────
 export interface WeatherData {
   location: Location;
   current: CurrentWeather;
   daily: DailyForecast;
   hourly: HourlyForecast;
   timezone: string;
-  unit: "celsius" | "fahrenheit";
+  unit: TemperatureUnit.Celsius | TemperatureUnit.Fahrenheit;
 }

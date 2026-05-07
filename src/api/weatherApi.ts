@@ -1,16 +1,18 @@
 import axios from "axios";
 import type { Location, WeatherData } from "../types/weather";
+import { TemperatureUnit, WindSpeedUnit } from "../utils/enum";
 
-// ── Clients ───────────────────────────────────────────────
+// api for getting lat and long
 const geoClient = axios.create({
   baseURL: "https://geocoding-api.open-meteo.com/v1",
 });
 
+// api for getting weather
 const weatherClient = axios.create({
   baseURL: "https://api.open-meteo.com/v1",
 });
 
-// ── Search locations ──────────────────────────────────────
+// fetching lat, long, country, name
 export async function searchLocations(query: string): Promise<Location[]> {
   if (!query.trim()) return [];
 
@@ -33,10 +35,12 @@ export async function searchLocations(query: string): Promise<Location[]> {
   }));
 }
 
-// ── Fetch weather for a location ──────────────────────────
+// fetching weather for a location
 export async function fetchWeather(
   location: Location,
-  unit: "celsius" | "fahrenheit" = "celsius"
+  unit:
+    | TemperatureUnit.Celsius
+    | TemperatureUnit.Fahrenheit = TemperatureUnit.Celsius
 ): Promise<WeatherData> {
   const { data } = await weatherClient.get("/forecast", {
     params: {
@@ -69,7 +73,7 @@ export async function fetchWeather(
         "windspeed_10m_max",
       ].join(","),
       temperature_unit: unit,
-      wind_speed_unit: "kmh",
+      wind_speed_unit: WindSpeedUnit.Kmh,
       timezone: "auto",
       forecast_days: 7,
     },

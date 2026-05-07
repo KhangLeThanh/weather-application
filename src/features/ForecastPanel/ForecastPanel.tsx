@@ -2,7 +2,7 @@ import { useState } from "react";
 import Tab from "../../components/Tab/Tab";
 import { getWeatherInfo, formatTemp } from "../../utils/weatherUtils";
 import type { WeatherData } from "../../types/weather";
-import { ForecastView } from "../../utils/enum";
+import { ForecastView, FilteredDay } from "../../utils/enum";
 import styles from "./ForecastPanel.module.scss";
 
 interface ForecastPanelProps {
@@ -10,7 +10,10 @@ interface ForecastPanelProps {
 }
 
 type TabView = ForecastView.Daily | ForecastView.Hourly;
-type DayFilter = 1 | 3 | 7;
+type DayFilter =
+  | FilteredDay.Today
+  | FilteredDay.ThreeDays
+  | FilteredDay.SevenDays;
 
 const VIEW_OPTIONS = [
   { label: ForecastView.Daily, value: ForecastView.Daily as TabView },
@@ -18,9 +21,9 @@ const VIEW_OPTIONS = [
 ];
 
 const FILTER_OPTIONS = [
-  { label: "Today", value: 1 as DayFilter },
-  { label: "3 days", value: 3 as DayFilter },
-  { label: "7 days", value: 7 as DayFilter },
+  { label: "Today", value: FilteredDay.Today as DayFilter },
+  { label: "3 days", value: FilteredDay.ThreeDays as DayFilter },
+  { label: "7 days", value: FilteredDay.SevenDays as DayFilter },
 ];
 
 export default function ForecastPanel({ data }: ForecastPanelProps) {
@@ -86,7 +89,7 @@ export default function ForecastPanel({ data }: ForecastPanelProps) {
                   </span>
                 </div>
                 <div className={styles.dayRain}>
-                  🌧 {daily.precipitationProbabilityMax[i]}%
+                  {daily.precipitationProbabilityMax[i]}%
                 </div>
               </div>
             );

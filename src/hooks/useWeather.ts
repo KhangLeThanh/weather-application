@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { fetchWeather } from "../api/weatherApi";
+import { TemperatureUnit } from "../utils/enum";
 import type { Location, WeatherData } from "../types/weather";
 
 interface UseWeatherState {
@@ -9,7 +10,10 @@ interface UseWeatherState {
 }
 
 interface UseWeatherReturn extends UseWeatherState {
-  fetch: (location: Location, unit?: "celsius" | "fahrenheit") => Promise<void>;
+  fetch: (
+    location: Location,
+    unit?: TemperatureUnit.Celsius | TemperatureUnit.Fahrenheit
+  ) => Promise<void>;
   clear: () => void;
 }
 
@@ -21,16 +25,23 @@ export function useWeather(): UseWeatherReturn {
   });
 
   const fetch = useCallback(
-    async (location: Location, unit: "celsius" | "fahrenheit" = "celsius") => {
+    async (
+      location: Location,
+      unit:
+        | TemperatureUnit.Celsius
+        | TemperatureUnit.Fahrenheit = TemperatureUnit.Celsius
+    ) => {
       setState({ data: null, loading: true, error: null });
       try {
         const data = await fetchWeather(location, unit);
         setState({ data, loading: false, error: null });
-      } catch (err: any) {
+      } catch (err: unknown) {
+        const message =
+          err instanceof Error ? err.message : "Failed to fetch weather data.";
         setState({
           data: null,
           loading: false,
-          error: err?.message ?? "Failed to fetch weather data.",
+          error: message,
         });
       }
     },

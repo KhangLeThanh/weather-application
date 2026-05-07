@@ -3,19 +3,24 @@ import SearchBar from "./features/SearchBar/SearchBar";
 import WeatherDisplay from "./features/WeatherDisplay/WeatherDisplay";
 import ForecastPanel from "./features/ForecastPanel/ForecastPanel";
 import UnitToggle from "./components/UnitToggle/UnitToggle";
+import { TemperatureUnit } from "./utils/enum";
 import { useWeather } from "./hooks/useWeather";
 import type { Location } from "./types/weather";
 import "./styles/global.scss";
 
 export default function App() {
-  const [unit, setUnit] = useState<"celsius" | "fahrenheit">("celsius");
+  const [unit, setUnit] = useState<
+    TemperatureUnit.Celsius | TemperatureUnit.Fahrenheit
+  >(TemperatureUnit.Celsius);
   const { data, loading, error, fetch: fetchWeather } = useWeather();
 
   const handleSelect = (location: Location) => {
     fetchWeather(location, unit);
   };
 
-  const handleUnitChange = (newUnit: "celsius" | "fahrenheit") => {
+  const handleUnitChange = (
+    newUnit: TemperatureUnit.Celsius | TemperatureUnit.Fahrenheit
+  ) => {
     setUnit(newUnit);
     if (data) fetchWeather(data.location, newUnit);
   };

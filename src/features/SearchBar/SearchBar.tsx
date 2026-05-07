@@ -1,8 +1,7 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { FiSearch, FiX, FiMapPin } from "react-icons/fi";
 import { searchLocations } from "../../api/weatherApi";
 import type { Location } from "../../types/weather";
-
 import styles from "./SearchBar.module.scss";
 
 interface SearchBarProps {
@@ -21,29 +20,6 @@ export default function SearchBar({
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-
-    if (!query.trim()) {
-      setResults([]);
-      setOpen(false);
-      return;
-    }
-
-    debounceRef.current = setTimeout(async () => {
-      setLoading(true);
-      try {
-        const data = await searchLocations(query);
-        setResults(data);
-        setOpen(true);
-      } catch {
-        setResults([]);
-      } finally {
-        setLoading(false);
-      }
-    }, 400);
-  }, [query]);
-
   // Close on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -56,6 +32,31 @@ export default function SearchBar({
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const handleQueryChange = useCallback((value: string) => {
+    setQuery(value);
+
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+
+    if (!value.trim()) {
+      setResults([]);
+      setOpen(false);
+      return;
+    }
+
+    debounceRef.current = setTimeout(async () => {
+      setLoading(true);
+      try {
+        const data = await searchLocations(value);
+        setResults(data);
+        setOpen(true);
+      } catch {
+        setResults([]);
+      } finally {
+        setLoading(false);
+      }
+    }, 400);
   }, []);
 
   const handleSelect = (location: Location) => {
@@ -83,7 +84,7 @@ export default function SearchBar({
           className={styles.input}
           type="text"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => handleQueryChange(e.target.value)}
           placeholder={placeholder}
           autoComplete="off"
           onFocus={() => results.length && setOpen(true)}

@@ -1,22 +1,29 @@
 import styles from "./UnitToggle.module.scss";
+import { TemperatureUnit } from "../../utils/enum";
 
 interface UnitToggleProps {
-  unit: "celsius" | "fahrenheit";
-  onChange: (unit: "celsius" | "fahrenheit") => void;
+  unit: TemperatureUnit.Celsius | TemperatureUnit.Fahrenheit;
+  onChange: (
+    unit: TemperatureUnit.Celsius | TemperatureUnit.Fahrenheit
+  ) => void;
 }
 
 export default function UnitToggle({ unit, onChange }: UnitToggleProps) {
   return (
     <div className={styles.toggle}>
       <button
-        className={`${styles.btn} ${unit === "celsius" ? styles.active : ""}`}
-        onClick={() => onChange("celsius")}
+        className={`${styles.btn} ${
+          unit === TemperatureUnit.Celsius ? styles.active : ""
+        }`}
+        onClick={() => onChange(TemperatureUnit.Celsius)}
       >
         °C
       </button>
       <button
-        className={`${styles.btn} ${unit === "fahrenheit" ? styles.active : ""}`}
-        onClick={() => onChange("fahrenheit")}
+        className={`${styles.btn} ${
+          unit === TemperatureUnit.Fahrenheit ? styles.active : ""
+        }`}
+        onClick={() => onChange(TemperatureUnit.Fahrenheit)}
       >
         °F
       </button>

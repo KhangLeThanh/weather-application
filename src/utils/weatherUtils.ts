@@ -1,5 +1,4 @@
-// Maps WMO weather codes to labels and emoji icons
-// https://open-meteo.com/en/docs#weathervariables
+import { TemperatureUnit } from "../utils/enum";
 
 export interface WeatherInfo {
   label: string;
@@ -52,7 +51,7 @@ export function getWindDirection(degrees: number): string {
 
 export function formatTemp(
   value: number,
-  unit: "celsius" | "fahrenheit"
+  unit: TemperatureUnit.Celsius | TemperatureUnit.Fahrenheit
 ): string {
-  return `${Math.round(value)}°${unit === "celsius" ? "C" : "F"}`;
+  return `${Math.round(value)}°${unit === TemperatureUnit.Celsius ? "C" : "F"}`;
 }
