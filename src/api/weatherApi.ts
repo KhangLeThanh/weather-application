@@ -27,7 +27,7 @@ export async function searchLocations(query: string): Promise<Location[]> {
 
   if (!data.results) return [];
 
-  return data.results.map((r: any) => ({
+  return data.results.map((r: Location) => ({
     name: r.name,
     country: r.country,
     latitude: r.latitude,
