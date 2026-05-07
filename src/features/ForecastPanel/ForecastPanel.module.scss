@@ -1,3 +1,5 @@
+@use "../../styles/breakpoints" as *;
+
 $surface: #1a1d2e;
 $surface-deep: #151827;
 $surface-accent: #1a2040;
@@ -15,6 +17,15 @@ $transition: 0.2s ease;
   border-radius: 20px;
   padding: 28px;
   animation: fadeIn 0.4s ease 0.1s both;
+
+  @include tablet {
+    padding: 20px;
+  }
+
+  @include mobile {
+    padding: 16px 14px;
+    border-radius: 16px;
+  }
 }
 
 @keyframes fadeIn {
@@ -35,6 +46,11 @@ $transition: 0.2s ease;
   margin-bottom: 24px;
   flex-wrap: wrap;
   gap: 12px;
+
+  @include mobile {
+    margin-bottom: 16px;
+    gap: 10px;
+  }
 }
 
 // ── Daily ─────────────────────────────────────────────────
@@ -42,6 +58,15 @@ $transition: 0.2s ease;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 12px;
+
+  @include tablet {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @include mobile {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
 }
 
 .dayCard {
@@ -59,6 +84,11 @@ $transition: 0.2s ease;
     background: $surface-accent;
     border-color: $border-accent;
   }
+
+  @include mobile {
+    padding: 14px 10px;
+    border-radius: 12px;
+  }
 }
 
 .dayName {
@@ -75,6 +105,10 @@ $transition: 0.2s ease;
   color: $text-secondary;
   opacity: 0.6;
   margin-bottom: 14px;
+
+  @include mobile {
+    margin-bottom: 10px;
+  }
 }
 
 .dayIcon {
@@ -98,6 +132,11 @@ $transition: 0.2s ease;
   align-items: center;
   justify-content: center;
   line-height: 1.4;
+
+  @include mobile {
+    font-size: 10px;
+    min-height: 28px;
+  }
 }
 
 .dayTemps {
@@ -112,12 +151,20 @@ $transition: 0.2s ease;
   font-size: 14px;
   font-weight: 700;
   color: $text-primary;
+
+  @include mobile {
+    font-size: 13px;
+  }
 }
 
 .tempLo {
   font-family: "Space Grotesk", sans-serif;
   font-size: 14px;
   color: $text-secondary;
+
+  @include mobile {
+    font-size: 13px;
+  }
 }
 
 .dayRain {
@@ -168,6 +215,18 @@ $transition: 0.2s ease;
     background: $surface-accent;
     border: 1px solid $border-accent;
   }
+
+  @include tablet {
+    grid-template-columns: 52px 28px 1fr 70px 70px 64px;
+    gap: 10px;
+    padding: 10px 12px;
+  }
+
+  @include mobile {
+    grid-template-columns: 44px 24px 1fr 56px 60px;
+    gap: 8px;
+    padding: 10px;
+  }
 }
 
 .hourTime {
@@ -175,6 +234,10 @@ $transition: 0.2s ease;
   font-size: 13px;
   color: $text-secondary;
   font-weight: 600;
+
+  @include mobile {
+    font-size: 11px;
+  }
 }
 
 .hourIcon {
@@ -184,11 +247,22 @@ $transition: 0.2s ease;
     width: 20px;
     height: 20px;
   }
+
+  @include mobile {
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
 }
 
 .hourCondition {
   font-size: 14px;
   color: $text-muted;
+
+  @include mobile {
+    font-size: 12px;
+  }
 }
 
 .hourRain {
@@ -199,6 +273,10 @@ $transition: 0.2s ease;
   align-items: center;
   justify-content: flex-end;
   gap: 4px;
+
+  @include mobile {
+    font-size: 11px;
+  }
 }
 
 .hourHumidity {
@@ -209,6 +287,10 @@ $transition: 0.2s ease;
   align-items: center;
   justify-content: flex-end;
   gap: 4px;
+
+  @include mobile {
+    display: none;
+  }
 }
 
 .hourTemp {
@@ -217,4 +299,8 @@ $transition: 0.2s ease;
   font-weight: 700;
   color: $text-primary;
   text-align: right;
+
+  @include mobile {
+    font-size: 13px;
+  }
 }

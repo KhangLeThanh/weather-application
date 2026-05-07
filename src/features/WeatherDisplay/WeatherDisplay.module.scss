@@ -1,3 +1,5 @@
+@use "../../styles/breakpoints" as *;
+
 $surface: #1a1d2e;
 $surface-deep: #151827;
 $border: #2e3250;
@@ -13,6 +15,15 @@ $transition: 0.2s ease;
   border-radius: 20px;
   padding: 32px;
   animation: fadeIn 0.4s ease;
+
+  @include tablet {
+    padding: 24px;
+  }
+
+  @include mobile {
+    padding: 20px 16px;
+    border-radius: 16px;
+  }
 }
 
 @keyframes fadeIn {
@@ -29,6 +40,10 @@ $transition: 0.2s ease;
 .location {
   margin-bottom: 24px;
   text-align: center;
+
+  @include mobile {
+    margin-bottom: 16px;
+  }
 }
 
 .city {
@@ -38,12 +53,24 @@ $transition: 0.2s ease;
   color: $text-primary;
   margin: 0 0 6px;
   letter-spacing: -0.5px;
+
+  @include tablet {
+    font-size: 26px;
+  }
+
+  @include mobile {
+    font-size: 22px;
+  }
 }
 
 .country {
   font-size: 14px;
   color: $text-secondary;
   margin: 0;
+
+  @include mobile {
+    font-size: 12px;
+  }
 }
 
 .main {
@@ -52,12 +79,25 @@ $transition: 0.2s ease;
   justify-content: center;
   gap: 24px;
   margin-bottom: 32px;
+
+  @include mobile {
+    gap: 16px;
+    margin-bottom: 24px;
+  }
 }
 
 .icon {
   font-size: 72px;
   line-height: 1;
   flex-shrink: 0;
+
+  @include tablet {
+    font-size: 56px;
+  }
+
+  @include mobile {
+    font-size: 48px;
+  }
 }
 
 .temp {
@@ -67,12 +107,26 @@ $transition: 0.2s ease;
   color: #fff;
   line-height: 1;
   letter-spacing: -3px;
+
+  @include tablet {
+    font-size: 56px;
+  }
+
+  @include mobile {
+    font-size: 48px;
+    letter-spacing: -2px;
+  }
 }
 
 .condition {
   font-size: 18px;
   color: $text-muted;
   margin-top: 8px;
+
+  @include mobile {
+    font-size: 15px;
+    margin-top: 6px;
+  }
 }
 
 .daynight {
@@ -87,6 +141,10 @@ $transition: 0.2s ease;
     width: 14px;
     height: 14px;
   }
+
+  @include mobile {
+    font-size: 12px;
+  }
 }
 
 .stats {
@@ -94,8 +152,13 @@ $transition: 0.2s ease;
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
 
-  @media (max-width: 600px) {
+  @include tablet {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include mobile {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
   }
 }
 
@@ -106,6 +169,11 @@ $transition: 0.2s ease;
   display: flex;
   flex-direction: column;
   gap: 6px;
+
+  @include mobile {
+    padding: 14px 12px;
+    border-radius: 12px;
+  }
 }
 
 .statValue {
@@ -113,6 +181,10 @@ $transition: 0.2s ease;
   font-size: 18px;
   font-weight: 700;
   color: $text-primary;
+
+  @include mobile {
+    font-size: 15px;
+  }
 }
 
 .statLabel {
@@ -120,4 +192,8 @@ $transition: 0.2s ease;
   color: $text-secondary;
   text-transform: uppercase;
   letter-spacing: 0.07em;
+
+  @include mobile {
+    font-size: 10px;
+  }
 }
