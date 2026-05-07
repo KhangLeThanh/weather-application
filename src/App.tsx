@@ -6,57 +6,54 @@ import UnitToggle from "./components/UnitToggle/UnitToggle";
 import { TemperatureUnit } from "./utils/enum";
 import { useWeather } from "./hooks/useWeather";
 import type { Location } from "./types/weather";
+import styles from "./App.module.scss";
 import "./styles/global.scss";
 
 export default function App() {
-  const [unit, setUnit] = useState<
-    TemperatureUnit.Celsius | TemperatureUnit.Fahrenheit
-  >(TemperatureUnit.Celsius);
+  const [unit, setUnit] = useState<TemperatureUnit>(TemperatureUnit.Celsius);
   const { data, loading, error, fetch: fetchWeather } = useWeather();
 
   const handleSelect = (location: Location) => {
     fetchWeather(location, unit);
   };
 
-  const handleUnitChange = (
-    newUnit: TemperatureUnit.Celsius | TemperatureUnit.Fahrenheit
-  ) => {
+  const handleUnitChange = (newUnit: TemperatureUnit) => {
     setUnit(newUnit);
     if (data) fetchWeather(data.location, newUnit);
   };
 
   return (
-    <div className="app">
-      <header className="topbar">
-        <span className="logo">⛅ skye</span>
+    <div className={styles.app}>
+      <header className={styles.topbar}>
+        <span className={styles.logo}>Weather Dashboard</span>
         <UnitToggle unit={unit} onChange={handleUnitChange} />
       </header>
 
-      <div className="search-row">
+      <div className={styles.searchRow}>
         <SearchBar onSelect={handleSelect} />
       </div>
 
       <main>
         {!data && !loading && !error && (
-          <div className="empty-state">
-            <p>Search for a city to see the weather 🌍</p>
+          <div className={styles.emptyState}>
+            <p>Search for a city to see the weather</p>
           </div>
         )}
 
         {loading && (
-          <div className="empty-state">
+          <div className={styles.emptyState}>
             <p>Fetching weather...</p>
           </div>
         )}
 
         {error && (
-          <div className="empty-state error">
+          <div className={`${styles.emptyState} ${styles.error}`}>
             <p>Something went wrong: {error}</p>
           </div>
         )}
 
         {data && !loading && (
-          <div className="grid">
+          <div className={styles.grid}>
             <WeatherDisplay data={data} />
             <ForecastPanel data={data} />
           </div>

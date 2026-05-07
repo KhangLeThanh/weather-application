@@ -13,20 +13,26 @@ $transition: 0.2s ease;
   background: $surface;
   border: 1px solid $border;
   border-radius: 20px;
-  padding: 24px;
+  padding: 28px;
   animation: fadeIn 0.4s ease 0.1s both;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   flex-wrap: wrap;
   gap: 12px;
 }
@@ -34,135 +40,180 @@ $transition: 0.2s ease;
 // ── Daily ─────────────────────────────────────────────────
 .dailyGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 12px;
 }
 
 .dayCard {
   background: $surface-deep;
   border: 1px solid $border;
-  border-radius: 14px;
-  padding: 14px 10px;
+  border-radius: 16px;
+  padding: 18px 12px;
   text-align: center;
   transition: border-color $transition;
 
-  &:hover { border-color: lighten($border, 10%); }
-  &.today { background: $surface-accent; border-color: $border-accent; }
+  &:hover {
+    border-color: #3d4270;
+  }
+  &.today {
+    background: $surface-accent;
+    border-color: $border-accent;
+  }
 }
 
 .dayName {
-  font-size: 11px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 600;
   color: $text-secondary;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 2px;
+  letter-spacing: 0.06em;
+  margin-bottom: 3px;
 }
 
 .dayDate {
-  font-size: 11px;
+  font-size: 12px;
   color: $text-secondary;
   opacity: 0.6;
-  margin-bottom: 10px;
+  margin-bottom: 14px;
 }
 
 .dayIcon {
-  font-size: 26px;
-  margin-bottom: 6px;
+  font-size: 30px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: center;
+
+  svg {
+    width: 30px;
+    height: 30px;
+  }
 }
 
 .dayCondition {
-  font-size: 10px;
+  font-size: 11px;
   color: $text-muted;
-  margin-bottom: 10px;
-  min-height: 28px;
+  margin-bottom: 12px;
+  min-height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
+  line-height: 1.4;
 }
 
 .dayTemps {
   display: flex;
   justify-content: center;
   gap: 6px;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .tempHi {
-  font-family: "Space Mono", monospace;
-  font-size: 13px;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 14px;
   font-weight: 700;
   color: $text-primary;
 }
 
 .tempLo {
-  font-family: "Space Mono", monospace;
-  font-size: 13px;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 14px;
   color: $text-secondary;
 }
 
 .dayRain {
-  font-size: 10px;
+  font-size: 11px;
   color: $accent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
 }
 
 // ── Hourly ────────────────────────────────────────────────
 .hourlyList {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  max-height: 380px;
+  gap: 6px;
+  max-height: 420px;
   overflow-y: auto;
   padding-right: 4px;
 
-  &::-webkit-scrollbar { width: 4px; }
-  &::-webkit-scrollbar-track { background: $surface-deep; border-radius: 2px; }
-  &::-webkit-scrollbar-thumb { background: $border; border-radius: 2px; }
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: $surface-deep;
+    border-radius: 2px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: $border;
+    border-radius: 2px;
+  }
 }
 
 .hourRow {
   display: grid;
-  grid-template-columns: 52px 28px 1fr 72px 72px 64px;
+  grid-template-columns: 60px 32px 1fr 80px 80px 72px;
   align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  border-radius: 10px;
+  gap: 14px;
+  padding: 12px 16px;
+  border-radius: 12px;
   background: $surface-deep;
   transition: background $transition;
 
-  &:hover { background: lighten($surface-deep, 3%); }
-  &.nowRow { background: $surface-accent; border: 1px solid $border-accent; }
+  &:hover {
+    background: #1c1f30;
+  }
+  &.nowRow {
+    background: $surface-accent;
+    border: 1px solid $border-accent;
+  }
 }
 
 .hourTime {
-  font-family: "Space Mono", monospace;
-  font-size: 12px;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 13px;
   color: $text-secondary;
-  font-weight: 700;
+  font-weight: 600;
 }
 
-.hourIcon { font-size: 18px; }
+.hourIcon {
+  font-size: 20px;
+  display: flex;
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
 
 .hourCondition {
-  font-size: 13px;
+  font-size: 14px;
   color: $text-muted;
 }
 
 .hourRain {
-  font-size: 12px;
+  font-size: 13px;
   color: $accent;
   text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
 }
 
 .hourHumidity {
-  font-size: 12px;
+  font-size: 13px;
   color: $text-secondary;
   text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
 }
 
 .hourTemp {
-  font-family: "Space Mono", monospace;
-  font-size: 13px;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 14px;
   font-weight: 700;
   color: $text-primary;
   text-align: right;

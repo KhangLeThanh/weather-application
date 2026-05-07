@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Tab from "../../components/Tab/Tab";
 import { getWeatherInfo, formatTemp } from "../../utils/weatherUtils";
+import { FiCloudRain, FiDroplet } from "react-icons/fi";
 import type { WeatherData } from "../../types/weather";
 import { ForecastView, FilteredDay } from "../../utils/enum";
 import styles from "./ForecastPanel.module.scss";
@@ -15,44 +16,45 @@ type DayFilter =
   | FilteredDay.ThreeDays
   | FilteredDay.SevenDays;
 
-const VIEW_OPTIONS = [
-  { label: ForecastView.Daily, value: ForecastView.Daily as TabView },
-  { label: ForecastView.Hourly, value: ForecastView.Hourly as TabView },
+const VIEW_OPTIONS: { label: string; value: TabView }[] = [
+  { label: "Daily", value: ForecastView.Daily },
+  { label: "Hourly", value: ForecastView.Hourly },
 ];
 
-const FILTER_OPTIONS = [
-  { label: "Today", value: FilteredDay.Today as DayFilter },
-  { label: "3 days", value: FilteredDay.ThreeDays as DayFilter },
-  { label: "7 days", value: FilteredDay.SevenDays as DayFilter },
+const FILTER_OPTIONS: { label: string; value: DayFilter }[] = [
+  { label: "Today", value: FilteredDay.Today },
+  { label: "3 days", value: FilteredDay.ThreeDays },
+  { label: "7 days", value: FilteredDay.SevenDays },
 ];
+
+const HOURS_MAP: Record<FilteredDay, number> = {
+  [FilteredDay.Today]: 24,
+  [FilteredDay.ThreeDays]: 72,
+  [FilteredDay.SevenDays]: 168,
+};
 
 export default function ForecastPanel({ data }: ForecastPanelProps) {
   const [view, setView] = useState<TabView>(ForecastView.Daily);
-  const [filter, setFilter] = useState<DayFilter>(7);
+  const [filter, setFilter] = useState<DayFilter>(FilteredDay.SevenDays);
 
   const { daily, hourly, unit } = data;
 
   const filteredDays = daily.time.slice(0, filter);
 
   const now = new Date();
-  const hoursToShow = filter === 1 ? 24 : filter === 3 ? 72 : 168;
   const filteredHourly = hourly.time
     .map((t, i) => ({ time: t, index: i }))
     .filter(({ time }) => new Date(time) >= now)
-    .slice(0, hoursToShow);
+    .slice(0, HOURS_MAP[filter]);
 
   return (
     <div className={styles.panel}>
       <div className={styles.header}>
-        <Tab
-          options={VIEW_OPTIONS}
-          value={view}
-          onChange={(v) => setView(v as TabView)}
-        />
-        <Tab
+        <Tab<TabView> options={VIEW_OPTIONS} value={view} onChange={setView} />
+        <Tab<DayFilter>
           options={FILTER_OPTIONS}
           value={filter}
-          onChange={(v) => setFilter(v as DayFilter)}
+          onChange={setFilter}
         />
       </div>
 
@@ -89,7 +91,7 @@ export default function ForecastPanel({ data }: ForecastPanelProps) {
                   </span>
                 </div>
                 <div className={styles.dayRain}>
-                  {daily.precipitationProbabilityMax[i]}%
+                  <FiCloudRain /> {daily.precipitationProbabilityMax[i]}%
                 </div>
               </div>
             );
@@ -114,10 +116,10 @@ export default function ForecastPanel({ data }: ForecastPanelProps) {
                 <span className={styles.hourIcon}>{weather.icon}</span>
                 <span className={styles.hourCondition}>{weather.label}</span>
                 <span className={styles.hourRain}>
-                  🌧 {hourly.precipitationProbability[index]}%
+                  <FiCloudRain /> {hourly.precipitationProbability[index]}%
                 </span>
                 <span className={styles.hourHumidity}>
-                  💧 {hourly.humidity[index]}%
+                  <FiDroplet /> {hourly.humidity[index]}%
                 </span>
                 <span className={styles.hourTemp}>
                   {formatTemp(hourly.temperature[index], unit)}
