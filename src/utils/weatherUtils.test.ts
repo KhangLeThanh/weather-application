@@ -1,6 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { getWeatherInfo, getWindDirection, formatTemp } from "../utils/weatherUtils";
-import { TemperatureUnit } from "../types/enums";
+import {
+  getWeatherInfo,
+  getWindDirection,
+  formatTemp,
+} from "../utils/weatherUtils";
+import { TemperatureUnit } from "../utils/enum";
 
 describe("getWeatherInfo", () => {
   it("returns Clear sky for code 0", () => {
@@ -29,7 +33,7 @@ describe("getWeatherInfo", () => {
   });
 
   it("returns Unknown for unrecognized code", () => {
-    expect(getWeatherInfo(999).label).toBe("Unknown");
+    expect(getWeatherInfo(90).label).toBe("Unknown");
   });
 });
 

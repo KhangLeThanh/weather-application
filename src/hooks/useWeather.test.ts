@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useWeather } from "../hooks/useWeather";
-import * as weatherApi from "../services/weatherApi";
-import { TemperatureUnit } from "../types/enums";
+import * as weatherApi from "../api/weatherApi";
+import { TemperatureUnit } from "../utils/enum";
 import type { WeatherData } from "../types/weather";
 
 const mockLocation = {
@@ -84,7 +84,9 @@ describe("useWeather", () => {
   });
 
   it("sets error on failed fetch", async () => {
-    vi.spyOn(weatherApi, "fetchWeather").mockRejectedValue(new Error("Network error"));
+    vi.spyOn(weatherApi, "fetchWeather").mockRejectedValue(
+      new Error("Network error")
+    );
     const { result } = renderHook(() => useWeather());
 
     await act(async () => {
