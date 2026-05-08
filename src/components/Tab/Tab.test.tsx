@@ -11,21 +11,21 @@ const options = [
 describe("Tab", () => {
   it("renders all options", () => {
     render(<Tab options={options} value="daily" onChange={vi.fn()} />);
-    expect(screen.getByText("Daily")).toBeInTheDocument();
-    expect(screen.getByText("Hourly")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Daily" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Hourly" })).toBeInTheDocument();
   });
 
   it("calls onChange with correct value when clicked", async () => {
     const onChange = vi.fn();
     render(<Tab options={options} value="daily" onChange={onChange} />);
-    await userEvent.click(screen.getByText("Hourly"));
+    await userEvent.click(screen.getByRole("button", { name: "Hourly" }));
     expect(onChange).toHaveBeenCalledWith("hourly");
   });
 
   it("calls onChange only once per click", async () => {
     const onChange = vi.fn();
     render(<Tab options={options} value="daily" onChange={onChange} />);
-    await userEvent.click(screen.getByText("Hourly"));
+    await userEvent.click(screen.getByRole("button", { name: "Hourly" }));
     expect(onChange).toHaveBeenCalledTimes(1);
   });
 
@@ -37,7 +37,7 @@ describe("Tab", () => {
     ];
     const onChange = vi.fn();
     render(<Tab options={numOptions} value={1} onChange={onChange} />);
-    await userEvent.click(screen.getByText("7 days"));
+    await userEvent.click(screen.getByRole("button", { name: "7 days" }));
     expect(onChange).toHaveBeenCalledWith(7);
   });
 });
