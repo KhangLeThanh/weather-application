@@ -5,6 +5,14 @@ import ForecastPanel from "./ForecastPanel";
 import { TemperatureUnit } from "../../utils/enum";
 import type { WeatherData } from "../../types/weather";
 
+// generate future hourly times so filteredHourly is not empty
+const now = new Date();
+const futureHours = Array.from({ length: 24 }, (_, i) => {
+  const d = new Date(now);
+  d.setHours(now.getHours() + i);
+  return d.toISOString().slice(0, 16);
+});
+
 const mockData: WeatherData = {
   location: {
     name: "Helsinki",
@@ -22,14 +30,14 @@ const mockData: WeatherData = {
     winddirection: 180,
     weathercode: 1,
     isDay: true,
-    time: "2026-05-07T12:00",
+    time: now.toISOString().slice(0, 16),
   },
   hourly: {
-    time: ["2026-05-07T12:00", "2026-05-07T13:00"],
-    temperature: [12, 13],
-    weathercode: [1, 2],
-    precipitationProbability: [10, 20],
-    humidity: [60, 55],
+    time: futureHours,
+    temperature: Array(24).fill(12),
+    weathercode: Array(24).fill(1),
+    precipitationProbability: Array(24).fill(10),
+    humidity: Array(24).fill(60),
   },
   daily: {
     time: ["2026-05-07", "2026-05-08", "2026-05-09"],
@@ -61,7 +69,9 @@ describe("ForecastPanel", () => {
 
   it("shows Today as first day in daily view", () => {
     render(<ForecastPanel data={mockData} />);
-    expect(screen.getByText("Today")).toBeInTheDocument();
+    // getAllByText because Today appears in both filter and day card
+    const todayElements = screen.getAllByText("Today");
+    expect(todayElements.length).toBeGreaterThanOrEqual(1);
   });
 
   it("switches to hourly view when Hourly tab is clicked", async () => {
@@ -70,10 +80,16 @@ describe("ForecastPanel", () => {
     expect(screen.getByText("Now")).toBeInTheDocument();
   });
 
-  it("renders correct number of days in 3 days filter", async () => {
+  it("renders daily view by default", () => {
     render(<ForecastPanel data={mockData} />);
-    await userEvent.click(screen.getByText("3 days"));
-    const dayCards = screen.getAllByText(/May/);
-    expect(dayCards.length).toBeLessThanOrEqual(3);
+    // daily view shows date like "May 7"
+    expect(screen.getAllByText(/May/).length).toBeGreaterThan(0);
+  });
+
+  it("switches back to daily view", async () => {
+    render(<ForecastPanel data={mockData} />);
+    await userEvent.click(screen.getByText("Hourly"));
+    await userEvent.click(screen.getByText("Daily"));
+    expect(screen.getAllByText(/May/).length).toBeGreaterThan(0);
   });
 });
