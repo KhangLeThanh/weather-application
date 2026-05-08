@@ -12,7 +12,6 @@ import "./styles/global.scss";
 export default function App() {
   const [unit, setUnit] = useState<TemperatureUnit>(TemperatureUnit.Celsius);
   const { data, loading, error, fetch: fetchWeather } = useWeather();
-
   const handleSelect = (location: Location) => {
     fetchWeather(location, unit);
   };
