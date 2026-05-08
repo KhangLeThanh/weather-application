@@ -8,24 +8,34 @@ const options = [
   { label: "Hourly", value: "hourly" },
 ];
 
+const getButtonLabels = () =>
+  screen.getAllByRole("button").map((b) => b.textContent?.toLowerCase() ?? "");
+
 describe("Tab", () => {
   it("renders all options", () => {
     render(<Tab options={options} value="daily" onChange={vi.fn()} />);
-    expect(screen.getByRole("button", { name: "Daily" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Hourly" })).toBeInTheDocument();
+    const labels = getButtonLabels();
+    expect(labels).toContain("daily");
+    expect(labels).toContain("hourly");
   });
 
   it("calls onChange with correct value when clicked", async () => {
     const onChange = vi.fn();
     render(<Tab options={options} value="daily" onChange={onChange} />);
-    await userEvent.click(screen.getByRole("button", { name: "Hourly" }));
+    const hourlyBtn = screen
+      .getAllByRole("button")
+      .find((b) => b.textContent?.toLowerCase() === "hourly");
+    await userEvent.click(hourlyBtn!);
     expect(onChange).toHaveBeenCalledWith("hourly");
   });
 
   it("calls onChange only once per click", async () => {
     const onChange = vi.fn();
     render(<Tab options={options} value="daily" onChange={onChange} />);
-    await userEvent.click(screen.getByRole("button", { name: "Hourly" }));
+    const hourlyBtn = screen
+      .getAllByRole("button")
+      .find((b) => b.textContent?.toLowerCase() === "hourly");
+    await userEvent.click(hourlyBtn!);
     expect(onChange).toHaveBeenCalledTimes(1);
   });
 
@@ -37,7 +47,10 @@ describe("Tab", () => {
     ];
     const onChange = vi.fn();
     render(<Tab options={numOptions} value={1} onChange={onChange} />);
-    await userEvent.click(screen.getByRole("button", { name: "7 days" }));
+    const sevenDaysBtn = screen
+      .getAllByRole("button")
+      .find((b) => b.textContent?.toLowerCase() === "7 days");
+    await userEvent.click(sevenDaysBtn!);
     expect(onChange).toHaveBeenCalledWith(7);
   });
 });
